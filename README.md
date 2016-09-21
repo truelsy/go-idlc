@@ -68,7 +68,7 @@ func main() {
 
 		offset, err := writer.Encode(buffer)
 		if err != nil {
-      return
+      			return
 		}
 
 		fmt.Println("writer offset :", offset)
@@ -79,7 +79,7 @@ func main() {
 		reader := &msg.TestMsg{}
 		err := reader.Decode(buffer)
 		if err != nil {
-      return
+      			return
 		}
 
 		fmt.Println("m_s8 :", reader.M_s8)
