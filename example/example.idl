@@ -1,0 +1,17 @@
+struct Item {
+	item_seq	uint64
+	item_name	string
+}
+
+message TestMsg : 7000 {
+	m_s8	int8
+	m_u8	uint8
+	m_s16	int16
+	m_u16	uint16	
+	m_s32	int32
+	m_u32	uint32
+	m_s64	int64
+	m_u64	uint64	
+	m_str	string
+	m_items	[]Item
+}
