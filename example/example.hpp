@@ -76,6 +76,7 @@ struct Item_Serializer {
 };
 
 struct TestMsg {
+	enum { MSG_ID = 7000 };
 	int8_t m_s8;
 	uint8_t m_u8;
 	int16_t m_s16;

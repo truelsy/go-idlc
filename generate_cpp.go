@@ -106,6 +106,10 @@ func WriteMessageDecodeCpp(varType, varName string, tab string) {
 func GenerateCppCode(el *TokenElement) {
 	fmt.Fprintf(os.Stdout, "struct %v {\n", el.Name)
 
+	if el.IsMsg {
+		fmt.Fprintf(os.Stdout, "	enum { MSG_ID = %v };\n", el.Id)
+	}
+
 	// Declare Variable
 	for idx, varName := range el.VarName {
 		varType := el.VarType[idx]
