@@ -169,7 +169,8 @@ func GenerateCppCode(el *TokenElement) {
 			fmt.Fprintf(os.Stdout, "		size += sizeof(uint16_t);\n")
 			if isPrimitiveType(arrVarType) {
 				fmt.Fprintf(os.Stdout, "		for(std::list<%v>::const_iterator iter = %v.begin(); iter != %v.end(); ++iter) {\n", ConvertVarTypeCpp(arrVarType), varName, varName)
-				WriteMessageSizeCs(arrVarType, "", TAB3)
+				//fmt.Fprintf(os.Stdout, "			const %v & val = *iter;\n", ConvertVarTypeCpp(arrVarType))
+				WriteMessageSizeCpp(arrVarType, "(*iter)", TAB3)
 				fmt.Fprintf(os.Stdout, "		}\n")
 			} else {
 				fmt.Fprintf(os.Stdout, "		for(std::list<%v>::const_iterator iter = %v.begin(); iter != %v.end(); ++iter) {\n", arrVarType, varName, varName)
@@ -213,7 +214,8 @@ func GenerateCppCode(el *TokenElement) {
 			fmt.Fprintf(os.Stdout, "		(*buf) += sizeof(uint16_t);\n")
 			if isPrimitiveType(arrVarType) {
 				fmt.Fprintf(os.Stdout, "		for (std::list<%v>::const_iterator iter = %v.begin(); iter != %v.end(); ++iter) {\n", ConvertVarTypeCpp(arrVarType), varName, varName)
-				WriteMessageEncodeCpp(arrVarType, "(*iter)", TAB3)
+				fmt.Fprintf(os.Stdout, "			const %v & val = *iter;\n", ConvertVarTypeCpp(arrVarType))
+				WriteMessageEncodeCpp(arrVarType, "val", TAB3)
 				fmt.Fprintf(os.Stdout, "		}\n")
 			} else {
 				fmt.Fprintf(os.Stdout, "		for(std::list<%v>::const_iterator iter = %v.begin(); iter != %v.end(); ++iter) {\n", arrVarType, varName, varName)
