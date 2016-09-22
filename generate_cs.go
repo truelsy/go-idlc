@@ -7,12 +7,7 @@ import (
 	"regexp"
 )
 
-const (
-	TAB3 = "\t\t\t"
-	TAB4 = "\t\t\t\t"
-)
-
-func GetInitialValue(varType string) string {
+func GetInitialValueCs(varType string) string {
 	switch varType {
 	case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64":
 		return "0"
@@ -22,7 +17,7 @@ func GetInitialValue(varType string) string {
 	return "\"\""
 }
 
-func ConvertVarType(varType string) string {
+func ConvertVarTypeCs(varType string) string {
 	switch varType {
 	case "int8":
 		return "sbyte"
@@ -54,7 +49,7 @@ func WriteMessageSizeCs(varType, varName string, tab string) {
 	}
 
 	fmt.Fprint(os.Stdout, tab)
-	fmt.Fprintf(os.Stdout, "size += sizeof(%v);\n", ConvertVarType(varType))
+	fmt.Fprintf(os.Stdout, "size += sizeof(%v);\n", ConvertVarTypeCs(varType))
 }
 
 func WriteMessageEncodeCs(varType, varName string, tab string) {
@@ -77,7 +72,7 @@ func WriteMessageEncodeCs(varType, varName string, tab string) {
 	}
 
 	fmt.Fprint(os.Stdout, tab)
-	fmt.Fprintf(os.Stdout, "buf.Write(BitConverter.GetBytes(%v), 0, sizeof(%v));\n", varName, ConvertVarType(varType))
+	fmt.Fprintf(os.Stdout, "buf.Write(BitConverter.GetBytes(%v), 0, sizeof(%v));\n", varName, ConvertVarTypeCs(varType))
 }
 
 func WriteMessageDecodeCs(varType, varName string, tab string) {
@@ -102,7 +97,7 @@ func WriteMessageDecodeCs(varType, varName string, tab string) {
 	}
 
 	fmt.Fprint(os.Stdout, tab)
-	fmt.Fprintf(os.Stdout, "if (sizeof(%v) > buf.Length - buf.Position) { return false; }\n", ConvertVarType(varType))
+	fmt.Fprintf(os.Stdout, "if (sizeof(%v) > buf.Length - buf.Position) { return false; }\n", ConvertVarTypeCs(varType))
 
 	fmt.Fprint(os.Stdout, tab)
 	switch varType {
@@ -125,7 +120,7 @@ func WriteMessageDecodeCs(varType, varName string, tab string) {
 	}
 
 	fmt.Fprint(os.Stdout, tab)
-	fmt.Fprintf(os.Stdout, "buf.Position += sizeof(%v);\n", ConvertVarType(varType))
+	fmt.Fprintf(os.Stdout, "buf.Position += sizeof(%v);\n", ConvertVarTypeCs(varType))
 }
 
 func GenerateCsCode(el *TokenElement) {
@@ -139,14 +134,14 @@ func GenerateCsCode(el *TokenElement) {
 	for idx, varName := range el.VarName {
 		varType := el.VarType[idx]
 		if isPrimitiveType(varType) {
-			fmt.Fprintf(os.Stdout, "	public %v %v = %v;\n", ConvertVarType(varType), varName, GetInitialValue(varType))
+			fmt.Fprintf(os.Stdout, "	public %v %v = %v;\n", ConvertVarTypeCs(varType), varName, GetInitialValueCs(varType))
 			continue
 		}
 
 		if isArrayType(varType) {
 			re := regexp.MustCompile("[a-zA-Z0-9_]+")
 			arrVarType := re.FindString(varType)
-			fmt.Fprintf(os.Stdout, "	public List<%v> %v = new List<%v>();\n", ConvertVarType(arrVarType), varName, ConvertVarType(arrVarType))
+			fmt.Fprintf(os.Stdout, "	public List<%v> %v = new List<%v>();\n", ConvertVarTypeCs(arrVarType), varName, ConvertVarTypeCs(arrVarType))
 			continue
 		}
 
@@ -173,7 +168,7 @@ func GenerateCsCode(el *TokenElement) {
 			fmt.Fprintf(os.Stdout, "			size += sizeof(short);\n")
 			if isPrimitiveType(arrVarType) {
 				fmt.Fprintf(os.Stdout, "			foreach(var iter in %v) {\n", varName)
-				fmt.Fprintf(os.Stdout, "				%v o = iter;\n", ConvertVarType(arrVarType))
+				fmt.Fprintf(os.Stdout, "				%v o = iter;\n", ConvertVarTypeCs(arrVarType))
 				WriteMessageSizeCs(arrVarType, "o", TAB4)
 				fmt.Fprintf(os.Stdout, "			}\n")
 			} else {
@@ -213,7 +208,7 @@ func GenerateCsCode(el *TokenElement) {
 			fmt.Fprintf(os.Stdout, "			buf.Write(BitConverter.GetBytes(%v.Count), 0, sizeof(short));\n", varName)
 			if isPrimitiveType(arrVarType) {
 				fmt.Fprintf(os.Stdout, "			foreach(var iter in %v) {\n", varName)
-				fmt.Fprintf(os.Stdout, "				%v o = iter;\n", ConvertVarType(arrVarType))
+				fmt.Fprintf(os.Stdout, "				%v o = iter;\n", ConvertVarTypeCs(arrVarType))
 				WriteMessageEncodeCs(arrVarType, "o", TAB4)
 				fmt.Fprintf(os.Stdout, "			}\n")
 			} else {
@@ -257,7 +252,7 @@ func GenerateCsCode(el *TokenElement) {
 
 			if isPrimitiveType(arrVarType) {
 				fmt.Fprintf(os.Stdout, "			for (int i = 0; i < %v_len; i++) {\n", varName)
-				fmt.Fprintf(os.Stdout, "				%v o = %v;\n", ConvertVarType(arrVarType), GetInitialValue(arrVarType))
+				fmt.Fprintf(os.Stdout, "				%v o = %v;\n", ConvertVarTypeCs(arrVarType), GetInitialValueCs(arrVarType))
 				WriteMessageDecodeCs(arrVarType, "o", TAB4)
 				fmt.Fprintf(os.Stdout, "				%v.Add(o);\n", varName)
 				fmt.Fprintf(os.Stdout, "			}\n")

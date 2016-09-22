@@ -421,9 +421,6 @@ func GenerateGoCode_Struct(el *TokenElement) {
 }
 
 func CompileGoCode(stmt *TokenStmt) {
-	fmt.Fprintln(os.Stdout, "//////////////////////////////////////////////////////////////////")
-	fmt.Fprintln(os.Stdout, "// Automatically-generated file. Do not edit!")
-	fmt.Fprintln(os.Stdout, "//////////////////////////////////////////////////////////////////\n")
 	fmt.Fprintln(os.Stdout, "package msg")
 	fmt.Fprintln(os.Stdout, "import \"encoding/binary\"")
 	fmt.Fprintln(os.Stdout, "import \"unsafe\"")

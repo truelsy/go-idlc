@@ -10,6 +10,12 @@ import (
 	"regexp"
 )
 
+const (
+	TAB2 = "\t\t"
+	TAB3 = "\t\t\t"
+	TAB4 = "\t\t\t\t"
+)
+
 func isWhitespace(ch rune) bool {
 	return ch == ' ' || ch == '\t' || ch == '\n'
 }
@@ -64,18 +70,18 @@ type TokenElement struct {
 }
 
 func main() {
-	lang := flag.String("l", "go", "target language [go|cs]")
+	lang := flag.String("l", "go", "target language [go|cs|cpp]")
 	flag.Parse()
 
 	if len(flag.Args()) < 1 {
-		fmt.Fprintf(os.Stdout, "usage: %v -l=[go|cs] input\n", os.Args[0])
+		fmt.Fprintf(os.Stdout, "usage: %v -l=[go|cs|cpp] input\n", os.Args[0])
 		return
 	}
 
 	switch *lang {
-	case "go", "cs": // do nothing
+	case "go", "cs", "cpp": // do nothing
 	default:
-		fmt.Fprintf(os.Stdout, "usage: %v -l=[go|cs] input\n", os.Args[0])
+		fmt.Fprintf(os.Stdout, "usage: %v -l=[go|cs|cpp] input\n", os.Args[0])
 		return
 	}
 
@@ -89,13 +95,15 @@ func main() {
 	dir := filepath.Dir(input)
 	output := filepath.Base(input)
 	ext := filepath.Ext(output)
-	output = output[0 : len(output)-len(ext)]
+	fname := output[0 : len(output)-len(ext)]
 
 	switch *lang {
 	case "go":
-		output = filepath.Join(dir, output+".go")
+		output = filepath.Join(dir, fname+".go")
 	case "cs":
-		output = filepath.Join(dir, output+".cs")
+		output = filepath.Join(dir, fname+".cs")
+	case "cpp":
+		output = filepath.Join(dir, fname+".hpp")
 	}
 
 	fmt.Fprintf(os.Stderr, "compile (%v -> %v)\n", input, output)
@@ -115,11 +123,17 @@ func main() {
 	//	// redirect
 	os.Stdout = wf
 
+	fmt.Fprintln(os.Stdout, "//////////////////////////////////////////////////////////////////")
+	fmt.Fprintln(os.Stdout, "// Automatically-generated file. Do not edit!")
+	fmt.Fprintln(os.Stdout, "//////////////////////////////////////////////////////////////////\n")
+
 	switch *lang {
 	case "go":
 		CompileGoCode(stmt)
 	case "cs":
 		CompileCsCode(stmt)
+	case "cpp":
+		CompileCppCode(stmt, fname)
 	}
 
 	rf.Close()
