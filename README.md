@@ -159,3 +159,62 @@ static void Main(string[] args)
     }
 }
 ```
+ * C++
+```cpp
+int main() {
+	std::vector<char> buf;
+
+	// Message Encode
+	{
+		TestMsg writer;
+		writer.m_s8 = 1;
+		writer.m_u8 = 2;
+		writer.m_s16 = 3;
+		writer.m_u16 = 4;
+		writer.m_s32 = 5;
+		writer.m_u32 = 6;
+		writer.m_s64 = 7;
+		writer.m_u64 = 8;
+		writer.m_str = "truelsy";
+		for (int i = 0; i < 3; i++)
+		{
+			Item o;
+			o.item_seq = static_cast<uint64_t>(i);
+			o.item_name = "Item_Name_" + std::to_string(i);
+			writer.m_items.push_back(o);
+		}
+
+		if (false == writer.Encode(buf))
+		{
+			std::cout << "Encode Error" << std::endl;
+			return -1;
+		}
+	}
+
+	// Message Decode
+	{
+		TestMsg reader;
+		if (false == reader.Decode(buf))
+		{
+			std::cout << "Decode Error" << std::endl;
+			return -1;
+		}
+
+		printf("s8 : %d\n", reader.m_s8);
+		printf("u8 : %d\n", reader.m_u8);
+		printf("s16 : %d\n", reader.m_s16);
+		printf("u16 : %d\n", reader.m_u16);
+		printf("s32 : %d\n", reader.m_s32);
+		printf("u32 : %d\n", reader.m_u32);
+		printf("s64 : %ld\n", reader.m_s64);
+		printf("u64 : %ld\n", reader.m_u64);
+		printf("str : %s\n", reader.m_str.c_str());
+
+		for (auto iter = reader.m_items.begin(); iter != reader.m_items.end(); ++iter)
+		{
+			printf("item_seq : %ld\n", (*iter).item_seq);
+			printf("item_name : %s\n", (*iter).item_name.c_str());
+		}
+	}
+}
+```
