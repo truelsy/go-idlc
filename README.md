@@ -41,6 +41,11 @@ $ gofmt -w example.go
 $ go-idlc -l=cs example.idl
 ```
 
+ * C++ 파일생성 (example.cpp)
+```
+$ go-idlc -l=cpp example.idl
+```
+
 ## 예제
  * Go
 ```go
