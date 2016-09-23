@@ -8,7 +8,7 @@ $ go get github.com/truelsy/go-idlc
 
 ## 특징
 ## 코드 생성
- * IDL 파일작성 (example.idl)
+ * Written Raw(IDL) File (example.idl)
 
 ```go
 struct Item {
@@ -30,18 +30,18 @@ message TestMsg : 7000 {
 }
 ```
 
- * Go 파일생성 (example.go)
+ * Generate Go Code (example.go)
 ```
 $ go-idlc -l=go example.idl
 $ gofmt -w example.go
 ```
 
- * C# 파일생성 (example.cs)
+ * Generate C# Code (example.cs)
 ```
 $ go-idlc -l=cs example.idl
 ```
 
- * C++ 파일생성 (example.cpp)
+ * Generate C++ Code (example.cpp)
 ```
 $ go-idlc -l=cpp example.idl
 ```
