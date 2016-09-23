@@ -41,7 +41,7 @@ $ gofmt -w example.go
 $ go-idlc -l=cs example.idl
 ```
 
- * Generate C++ Code (example.cpp)
+ * Generate C++ Code (example.hpp)
 ```
 $ go-idlc -l=cpp example.idl
 ```
