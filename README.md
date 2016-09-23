@@ -7,7 +7,7 @@ $ go get github.com/truelsy/go-idlc
 ```
 
 ## 특징
-## 컴파일
+## 코드 생성
  * IDL 파일작성 (example.idl)
 
 ```go
