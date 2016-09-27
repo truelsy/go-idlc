@@ -33,7 +33,6 @@ message TestMsg : 7000 {
  * Generate Go Code (example.go)
 ```
 $ go-idlc -l=go example.idl
-$ gofmt -w example.go
 ```
 
  * Generate C# Code (example.cs)
