@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"regexp"
 	"unicode"
 )
@@ -420,7 +421,7 @@ func GenerateGoCode_Struct(el *TokenElement) {
 	fmt.Fprintln(os.Stdout, "}\n")
 }
 
-func CompileGoCode(stmt *TokenStmt) {
+func CompileGoCode(stmt *TokenStmt, output string) {
 	fmt.Fprintln(os.Stdout, "package msg")
 	fmt.Fprintln(os.Stdout, "import \"encoding/binary\"")
 	fmt.Fprintln(os.Stdout, "import \"unsafe\"")
@@ -469,4 +470,12 @@ func CompileGoCode(stmt *TokenStmt) {
 		}
 	}
 
+	//fmt.Fprintln(os.Stderr, "execute gofmt!!")
+	// execute gofmt
+	cmd := exec.Command("gofmt", "-w", output)
+	if err := cmd.Start(); err != nil {
+		fmt.Fprintln(os.Stderr, "gofmt execute fail. err(", err, ")")
+		return
+	}
+	cmd.Wait()
 }

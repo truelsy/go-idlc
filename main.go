@@ -106,8 +106,6 @@ func main() {
 		output = filepath.Join(dir, fname+".hpp")
 	}
 
-	fmt.Fprintf(os.Stderr, "compile (%v -> %v)\n", input, output)
-
 	stmt, err := NewParser(bufio.NewReader(rf)).Parse()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "input file parsing error(", err, ")")
@@ -129,12 +127,14 @@ func main() {
 
 	switch *lang {
 	case "go":
-		CompileGoCode(stmt)
+		CompileGoCode(stmt, output)
 	case "cs":
 		CompileCsCode(stmt)
 	case "cpp":
 		CompileCppCode(stmt, fname)
 	}
+
+	fmt.Fprintf(os.Stderr, "complete compile! (%v -> %v)\n", input, output)
 
 	rf.Close()
 	wf.Close()
