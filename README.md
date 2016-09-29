@@ -45,6 +45,11 @@ $ go-idlc -l=cs example.idl
 $ go-idlc -l=cpp example.idl
 ```
 
+ * Generate Python Code (example.py)
+```
+$ go-idlc -l=py example.idl
+```
+
 ## 예제
  * Go
 ```go
@@ -221,4 +226,48 @@ int main() {
 		}
 	}
 }
+```
+ * Python
+```python
+#!/usr/bin/env python
+
+from example import *
+
+# Encode
+writer = TestMsg()
+writer.m_s8 = 1
+writer.m_u8 = 2
+writer.m_s16 = 3
+writer.m_u16 = 4
+writer.m_s32 = 5
+writer.m_u32 = 6
+writer.m_s64 = 7
+writer.m_u64 = 8
+writer.m_str = "truelsy"
+
+for i in range(3) :
+    item = Item()
+    item.item_seq = i
+    item.item_name = "Item_Name_%d" % i
+    writer.m_items.append(item)
+
+data = writer.Encode()
+
+# Decode
+reader = TestMsg()
+reader.Decode(data)
+
+print "m_s8 : %d" % reader.m_s8
+print "m_u8 : %d" % reader.m_u8
+print "m_s16 : %d" % reader.m_s16
+print "m_u16 : %d" % reader.m_u16
+print "m_s32 : %d" % reader.m_s32
+print "m_u32 : %d" % reader.m_u32
+print "m_s64 : %d" % reader.m_s64
+print "m_u64 : %d" % reader.m_u64
+print "m_str : %s" % reader.m_str
+
+for item in reader.m_items :
+    print "item_seq : %d" % item.item_seq
+    print "item_name : %s" % item.item_name
 ```
