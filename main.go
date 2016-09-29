@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	TAB1 = "\t"
 	TAB2 = "\t\t"
 	TAB3 = "\t\t\t"
 	TAB4 = "\t\t\t\t"
@@ -70,18 +71,18 @@ type TokenElement struct {
 }
 
 func main() {
-	lang := flag.String("l", "go", "target language [go|cs|cpp]")
+	lang := flag.String("l", "go", "target language [go|cs|cpp|py]")
 	flag.Parse()
 
 	if len(flag.Args()) < 1 {
-		fmt.Fprintf(os.Stdout, "usage: %v -l=[go|cs|cpp] input\n", os.Args[0])
+		fmt.Fprintf(os.Stdout, "usage: %v -l=[go|cs|cpp|py] input\n", os.Args[0])
 		return
 	}
 
 	switch *lang {
-	case "go", "cs", "cpp": // do nothing
+	case "go", "cs", "cpp", "py": // do nothing
 	default:
-		fmt.Fprintf(os.Stdout, "usage: %v -l=[go|cs|cpp] input\n", os.Args[0])
+		fmt.Fprintf(os.Stdout, "usage: %v -l=[go|cs|cpp|py] input\n", os.Args[0])
 		return
 	}
 
@@ -104,6 +105,8 @@ func main() {
 		output = filepath.Join(dir, fname+".cs")
 	case "cpp":
 		output = filepath.Join(dir, fname+".hpp")
+	case "py":
+		output = filepath.Join(dir, fname+".py")
 	}
 
 	stmt, err := NewParser(bufio.NewReader(rf)).Parse()
@@ -121,9 +124,15 @@ func main() {
 	//	// redirect
 	os.Stdout = wf
 
-	fmt.Fprintln(os.Stdout, "//////////////////////////////////////////////////////////////////")
-	fmt.Fprintln(os.Stdout, "// Automatically-generated file. Do not edit!")
-	fmt.Fprintln(os.Stdout, "//////////////////////////////////////////////////////////////////\n")
+	if "py" == *lang {
+		fmt.Fprintln(os.Stdout, "##################################################################")
+		fmt.Fprintln(os.Stdout, "## Automatically-generated file. Do not edit!")
+		fmt.Fprintln(os.Stdout, "##################################################################\n")
+	} else {
+		fmt.Fprintln(os.Stdout, "//////////////////////////////////////////////////////////////////")
+		fmt.Fprintln(os.Stdout, "// Automatically-generated file. Do not edit!")
+		fmt.Fprintln(os.Stdout, "//////////////////////////////////////////////////////////////////\n")
+	}
 
 	switch *lang {
 	case "go":
@@ -132,6 +141,8 @@ func main() {
 		CompileCsCode(stmt)
 	case "cpp":
 		CompileCppCode(stmt, fname)
+	case "py":
+		CompilePyCode(stmt)
 	}
 
 	fmt.Fprintf(os.Stderr, "complete compile! (%v -> %v)\n", input, output)
